@@ -7,26 +7,12 @@
         <br />
         <br />
 
-        <fieldset>
-            <legend>Filtro</legend>
-            <form action="{{ route('reservation.index') }}">
-                <div class="row">
-                    <div class="col">
-                        <select class="form-control" name="room_id">
-                            <option value="">Seleccione</option>
-                            @foreach ($listRooms as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col">
-                        <button type="submit" class="btn btn-lg btn-primary float-end" type="submit">Buscar</button>
-                    </div>
-                </div>
-            </form>
-        </fieldset>
+        @if (auth()->user()->isAdmin())
+            @include('reservations.search')
+        @else
+            <a href="{{ route('reservation.create') }}" class="btn btn-primary">Reservar</a>
+        @endif
         <br />
-        {{-- <a href="{{ route('room.create') }}" class="btn btn-primary">Crear Sala</a> --}}
         <table class="table table-bordered table-hover mt-4 ">
             <thead>
                 <tr class="table-secondary">
@@ -36,7 +22,9 @@
                     <th class="text-center" scope="col">Estado</th>
                     <th class="text-center" scope="col">Fecha de Creacion</th>
                     <th class="text-center" scope="col">Fecha de Modificación</th>
-                    <th class="text-center" scope="col">Acción</th>
+                    @if (auth()->user()->isAdmin())
+                        <th class="text-center" scope="col">Acción</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -49,18 +37,20 @@
                             <td class="text-center">{!! $item->getStatus() !!}</td>
                             <td class="text-center">{{ $item->created_at }}</td>
                             <td class="text-center">{{ $item->updated_at }}</td>
-                            <td class="text-center">
-                                <div class="btn-group" role="group" aria-label="actions">
-                                    @if ($item->status != '2')
-                                        <a href="{{ route('reservation.approve', $item->id) }}"
-                                            class="btn btn-success">Aprobar</a>
-                                    @endif
-                                    @if ($item->status != '3')
-                                        <a href="{{ route('reservation.reject', $item->id) }}"
-                                            class="btn btn-danger">Rechazar</a>
-                                    @endif
-                                </div>
-                            </td>
+                            @if (auth()->user()->isAdmin())
+                                <td class="text-center">
+                                    <div class="btn-group" role="group" aria-label="actions">
+                                        @if ($item->status != '2')
+                                            <a href="{{ route('reservation.approve', $item->id) }}"
+                                                class="btn btn-success">Aprobar</a>
+                                        @endif
+                                        @if ($item->status != '3')
+                                            <a href="{{ route('reservation.reject', $item->id) }}"
+                                                class="btn btn-danger">Rechazar</a>
+                                        @endif
+                                    </div>
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 @endif

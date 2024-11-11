@@ -12,7 +12,7 @@
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Descripción</label>
-            <input type="text" required class="form-control" name="description" id="description"
+            <input type="text" class="form-control" name="description" id="description"
                 placeholder="Description" value="{{ old('description')}}" />
         </div>
         <button class="btn btn-lg btn-primary float-end" type="submit">Crear Sala</button>

@@ -19,11 +19,9 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             return redirect()->route("dashboard");
+        } else{
+            return redirect()->route("login")->with('error','Error al iniciar sesión. Por favor verifique sus datos.');
         }
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
     }
 
     public function login(Request $request)

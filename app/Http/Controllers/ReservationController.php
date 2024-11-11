@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\ReservationService;
-use App\Services\RoomService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Services\RoomService;
+use App\Services\ReservationService;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
@@ -23,7 +25,13 @@ class ReservationController extends Controller
     {
         $conditions = [];
 
-        if ($request->has('room_id')) {
+        $user = Auth::user();
+
+        if (!$user->isAdmin()){
+            $conditions['user_id'] = $user->id;
+        }
+
+        if ($request->has('room_id') && !empty($request->room_id)) {
             $conditions['room_id'] = $request->input('room_id');
         }
 
@@ -42,7 +50,11 @@ class ReservationController extends Controller
      */
     public function create()
     {
-        //
+        $listRooms = $this->roomService->getListPluck();
+
+        return view('reservations.create', [
+            'listRooms' => $listRooms
+        ]);
     }
 
     /**
@@ -50,7 +62,22 @@ class ReservationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $dateTime = Carbon::createFromFormat('Y-m-d H:i', $request->date_reservation);
+
+        $id = Auth::id();
+        $request->merge(['user_id' => $id]);
+
+        $existsReservation = $this->service->isReserved($request->room_id, $dateTime);
+
+        if ($existsReservation) {
+            return redirect()->route("reservation.index")->with('error', 'Ya existe una reservacion en este horario. Por favor seleccione otra fecha');
+        } else {
+            if ($this->service->save($request->except('_token'))) {
+                return redirect()->route("reservation.index")->with('success', 'La reservacion se ha creado con exito.');
+            } else {
+                redirect()->back()->with('error', 'Ha ocurrido un error al crear la reservacion. Por favor verifique los datos suministrados');
+            }
+        }
     }
 
     /**

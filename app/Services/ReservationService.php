@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Reservation;
+use Carbon\Carbon;
 
 class ReservationService
 {
@@ -11,7 +12,14 @@ class ReservationService
         $reservationInstance = new Reservation();
 
         if (!empty($conditions)) {
-            $reservationInstance = $reservationInstance->where('room_id','=',$conditions['room_id']);
+
+            if(array_key_exists('room_id', $conditions)){
+                $reservationInstance = $reservationInstance->where('room_id', '=', $conditions['room_id']);
+            }
+
+            if(array_key_exists('user_id', $conditions)){
+                $reservationInstance = $reservationInstance->where('user_id', '=', $conditions['user_id']);
+            }
         }
 
         return $reservationInstance->paginate($limit);
@@ -19,7 +27,7 @@ class ReservationService
 
     public function save($data = [])
     {
-        $reservation =  new Reservation($data);
+        $reservation = new Reservation($data);
 
         return $reservation->save();
     }
@@ -59,5 +67,24 @@ class ReservationService
         $reservation->status = Reservation::$reject;
 
         return $reservation->save();
+    }
+
+    public function isReserved($roomId, $date)
+    {
+        $output = false;
+
+        $listReservations = Reservation::where('room_id', $roomId)
+        ->whereDate('date_reservation', $date->toDateString())->get();
+
+        foreach ($listReservations as $reservation) {
+            $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', $reservation->date_reservation);
+            $dateTimeAddHour = $dateTime->addHour();
+
+            if ($date->lessThan($dateTimeAddHour)) {
+                $output = true;
+            }
+        }
+
+        return $output;
     }
 }

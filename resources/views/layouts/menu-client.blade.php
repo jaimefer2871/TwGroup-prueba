@@ -8,7 +8,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{ route('reservation.index') }}">
                     <span data-feather="shopping-cart"></span>
                     Reservaciones
                 </a>
