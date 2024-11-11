@@ -4,11 +4,6 @@
     @vite(['resources/css/signin.css'])
 @endsection
 @section('content')
-    @if (session('success'))
-        <h6 class="alert alert-success">
-            {{ session('success') }}
-        </h6>
-    @endif
     <div class="form-signin">
         <form method="post" action="{{ route('auth') }}">
             @csrf()

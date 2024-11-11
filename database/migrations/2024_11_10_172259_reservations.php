@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('room_id');
             $table->unsignedBigInteger('user_id');
             $table->dateTimeTz('date_reservation');
+            $table->integer('status')->default(1);
             $table->timestamps();
 
             $table->foreign('room_id')->references('id')->on('rooms');

@@ -39,11 +39,34 @@
         @if (auth()->user())
             @include('layouts.menu')
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                @if (session('success'))
+                    <h6 class="alert alert-success">
+                        {{ session('success') }}
+                    </h6>
+                @endif
+
+                @if (session('error'))
+                    <h6 class="alert alert-danger">
+                        {{ session('error') }}
+                    </h6>
+                @endif
                 @yield('content')
                 @stack('scripts')
             </main>
         @else
             <main class="col-md-12 ms-sm-auto col-lg-12 px-md-4">
+                @if (session('success'))
+                    <h6 class="alert alert-success">
+                        {{ session('success') }}
+                    </h6>
+                @endif
+
+                @if (session('error'))
+                    <h6 class="alert alert-danger">
+                        {{ session('error') }}
+                    </h6>
+                @endif
+
                 @yield('content')
                 @stack('scripts')
             </main>
