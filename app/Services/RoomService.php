@@ -37,4 +37,9 @@ class RoomService
     {
         return Room::find($id);
     }
+
+    public function getListPluck()
+    {
+        return Room::all()->pluck('name','id');
+    }
 }

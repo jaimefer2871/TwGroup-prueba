@@ -40,4 +40,7 @@ Route::prefix('reservations')->group(function () {
     Route::put('/update/{id}', [ReservationController::class, 'update'])->name('reservation.update');
     Route::get('/delete/{id}', [ReservationController::class, 'destroy'])->name('reservation.delete');
 
+    Route::get('/approve/{id}', [ReservationController::class, 'approve'])->name('reservation.approve');
+    Route::get('/reject/{id}', [ReservationController::class, 'reject'])->name('reservation.reject');
+
 })->middleware('auth');
